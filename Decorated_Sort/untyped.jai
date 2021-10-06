@@ -35,6 +35,47 @@ undecorate :: (array: [] $T, buffer: [] Decoration) -> Undecorated(T) {
 }
 
 
+
+copy :: (array: [] $T, decorated: [] Decoration, allocator := context.allocator, allocator_data := context.allocator_data) -> [] T {
+    assert(decorated.count >= array.count, "Decorated buffer is not large enough for that array.");
+
+    result : [] T = ---;
+    result.count = array.count;
+    result.data = alloc(result.count, allocator, allocator_data);
+    for decorated_item, i: decorated {
+        result[i] = array[decorated[i].value_index];
+    }
+    return result;
+}
+
+
+apply :: (array: [] $T, decorated: [] Decoration, allocator := __temporary_allocator, allocator_data : *void = null) {
+    assert(decorated.count >= array.count, "Decorated buffer is not large enough for that array.");
+
+    if !allocator {
+        allocator = context.allocator;
+        allocator_data = context.allocator_data;
+    }
+
+    intermediate := copy(array, decorated, allocator, allocator_data);
+    defer free(intermediate.data, allocator, allocator_data);
+
+    memcpy(array.data, intermediate.data, intermediate.count);
+}
+
+
+apply :: (array: [] $T, decorated: [] Decoration, intermediate: [] T) {
+    assert(decorated.count >= array.count, "Decorated buffer is not large enough for that array.");
+    assert(intermediate.count >= array.count, "Intermediate array is not large enough for that array.");
+
+    for i: 0 .. array.count - 1{
+        intermediate[i] = array[decorated[i].value_index];
+    }
+
+    memcpy(array.data, intermediate.data, intermediate.count);
+}
+
+
 Undecorated :: struct(type: Type) {
     array : [] type;
     buffer : [] Decoration;

@@ -5,7 +5,8 @@
 letters := #run cast([]u8) "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 typed_buffer : [1024] Typed_Decoration(u8, int);
 buffer : [1024] Decoration;
-
+intermediate : [1024] u8;
+use_intermediate :: true;
 
 main :: () {
     {
@@ -17,7 +18,24 @@ main :: () {
             print("%", as_string(*it));
         }
         print("\n");
+
+        sorted := copy(decorated);
+        for sorted {
+            print("%", as_string(*it));
+        }
+        print("\n");
+
+        #if use_intermediate
+            apply(letters, decorated, intermediate);
+        else
+            apply(letters, decorated);
+        for letters {
+            print("%", as_string(*it));
+        }
+        print("\n");
     }
+
+    print("\n");
 
     {
         decorated := decorate(letters, buffer, index_of_letter);
@@ -28,13 +46,23 @@ main :: () {
             print("%", as_string(*it));
         }
         print("\n");
+
+        sorted := copy(letters, decorated);
+        for sorted {
+            print("%", as_string(*it));
+        }
+        print("\n");
+
+        #if use_intermediate
+            apply(letters, decorated, intermediate);
+        else
+            apply(letters, decorated);
+        for letters {
+            print("%", as_string(*it));
+        }
+        print("\n");
     }
 }
-
-
-// @TODO This makes the compiler allocate a gajillion ram then crash:
-//   index_of_letter :: (letter) => to_upper(letter) * 2 + ifx is_lower(letter) then 1 else 0;
-// Report it after v86 if it isn't better.
 
 
 index_of_letter :: (letter: u8) -> int {
