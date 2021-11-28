@@ -14,7 +14,7 @@ print_error :: (format_string: string, args: .. Any) -> bytes_printed: s64 {
 
 
 write_builder_to_stderr :: (using b: *String_Builder) -> s64 {
-    if !allocator return 0;
+    if !allocator.proc return 0;
 
     buffer  := *base_buffer;
     written := 0;
