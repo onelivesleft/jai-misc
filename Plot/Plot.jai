@@ -47,6 +47,13 @@ wait :: () {
 }
 
 
+wait_for_user :: () {
+    waiting_for_user = true;
+    while waiting_for_user
+        sleep_milliseconds(10);
+}
+
+
 plot_done :: () {
     while plot_is_running  wait();
 }
@@ -219,6 +226,14 @@ RGB :: struct {
     r, g, b: u8;
 }
 
+rgb :: (r: int, g: int, b: int) -> RGB {
+    result : RGB = ---;
+    result.r = xx r;
+    result.g = xx g;
+    result.b = xx b;
+    return result;
+}
+
 rgb :: (color: Vector3) -> RGB {
     result : RGB = ---;
     result.r = xx (color.x * 255);
@@ -255,6 +270,7 @@ texture : Texture;
 
 now : float64;
 dt : float64;
+waiting_for_user := false;
 
 window_style : u32 : xx (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX);
 
@@ -309,6 +325,8 @@ handle_window_events :: () {
 
             case .KEYBOARD;
             if event.key_pressed {
+                waiting_for_user = false;
+
                 if event.key_code == {
                     case .ESCAPE;
                     plot_is_running = false;

@@ -21,6 +21,15 @@ main :: () {
 
 ## Commands
 
+### Control
+* `plot_start`       displayed the window
+* `plot_done`        waits until the user closes the window
+* `plot_exit`        exits immediately
+* `wait`             sleep for a short amount of time
+* `wait_for_user`    sleep until the user clicks the mouse or hits a key
+
+### Drawing
+* `clear`
 * `plot`
 * `line`
 * `box`
