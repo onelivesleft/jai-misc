@@ -20,9 +20,14 @@ Provides a print-like called `print_error` which outputs to stderr.
 
 ## U128
 
-Provides a `U128` type.
+Provides a `U128` type that currently supports bitwise and comparison operators.
 
 
 ## Iter
 
 Provides tools for iteration
+
+
+## Plot
+
+Shows a window and lets you draw in it with simple draw commands (`plot`, `line`, etc.)
