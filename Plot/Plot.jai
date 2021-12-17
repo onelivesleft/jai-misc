@@ -72,7 +72,7 @@ clear :: () {
 
 plot :: (x: $T, y: T, color := default_color) {
     index := (cast,trunc(s32)x + bitmap.width * cast,trunc(s32)y) * 3;
-    if !bitmap.data || index >= bitmap.data.count  return;
+    if !bitmap.data || index < 0 || index >= bitmap.data.count  return;
 
     <<cast(*RGB)*bitmap.data[index] = color;
 }
@@ -83,9 +83,15 @@ plot :: inline (p: Vector2, color := colors.white) {
 
 
 line :: (x0: $T, y0: T, x1: T, y1: T, color := default_color) {
-    if x0 == x1 && y0 == y1 {
-        plot(x0, y0, color);
+    if x0 == x1 {
+        if y0 == y1
+            plot(x0, y0, color);
+        else
+            vertical_line(x0, y0, y1);
         return;
+    }
+    else if y0 == y1 {
+        horizontal_line(x0, x1, y0);
     }
 
     dx := x1 - x0;
