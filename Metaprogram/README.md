@@ -1,6 +1,6 @@
 # Metaprogram
 
-An upgraded version of Default_Metaprogram.  To use it install this module as you normally do, and then either use the `-meta` compiler argument, or replace the `modules/Default_Metaprogram.jai` in the compiler.  Do so by replacing the `do_error_checking` line in it with:
+An upgraded version of Default_Metaprogram.  To use it install this module as you normally do, and then either use the `-meta` compiler argument, or replace the `modules/Default_Metaprogram.jai` file in the compiler.  Do so by replacing the `do_error_checking` line in it with:
 
 ```jai
             do_error_checking(message, check_bindings = check_bindings);
