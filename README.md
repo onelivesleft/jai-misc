@@ -32,6 +32,11 @@ Replacement Default_Metaprogram with upgraded features.
 Shows a window and lets you draw in it with simple draw commands (`plot`, `line`, etc.)
 
 
+## Struct
+
+Utilities for working with structs
+
+
 ## U128
 
 Provides a `U128` type that currently supports bitwise and comparison operators.
