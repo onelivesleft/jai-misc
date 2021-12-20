@@ -1,7 +1,7 @@
 #import "Hash_Table";
 
 main :: () {
-    array : Table(int, int);
+    array : [..] int;
     foo := other(array); @Becomes_Invalid
 }
 

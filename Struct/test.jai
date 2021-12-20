@@ -39,10 +39,10 @@ main :: () {
     print("f4: %\n", f4);
 
 
-    // `String_Builder` contains an inner struct called `Buffer` which we don't have access to,
-    // so we disallow members that use it by adding them to the `blacklist`.
-    string_builder :: #insert #run constructor(String_Builder, initializer="init_string_builder",
-                                               blacklist=.["base_buffer", "current_buffer"]);
+    // `String_Builder` contains an inner struct called `Buffer` which we don't have access to.
+    // We could disinclude members which use it  by adding them to the `blacklist`, but in actuality
+    // the only member we might want to set on `String_Builder` is `allocator`, so we'll whitelist that instead.
+    string_builder :: #insert #run constructor(String_Builder, initializer="init_string_builder", whitelist=.["allocator"]);
 
     builder := string_builder();
     print_to_builder(*builder, "Help I am a %", "robot");

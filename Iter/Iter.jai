@@ -22,8 +22,3 @@ for_expansion :: (m: *Map, body: Code, flags: For_Flags) #expand {
         #insert body;
     }
 }
-
-
-add_to_array :: (array: *[..] $T, iterator: $U) {
-    for iterator  array_add(array, it);
-}

@@ -36,12 +36,12 @@ undecorate :: (array: [] $T, buffer: [] Decoration) -> Undecorated(T) {
 
 
 
-copy :: (array: [] $T, decorated: [] Decoration, allocator := context.allocator, allocator_data := context.allocator_data) -> [] T {
+copy :: (array: [] $T, decorated: [] Decoration, allocator := context.allocator) -> [] T {
     assert(decorated.count >= array.count, "Decorated buffer is not large enough for that array.");
 
     result : [] T = ---;
     result.count = array.count;
-    result.data = alloc(result.count, allocator, allocator_data);
+    result.data = alloc(result.count, allocator);
     for decorated_item, i: decorated {
         result[i] = array[decorated[i].value_index];
     }
@@ -49,7 +49,7 @@ copy :: (array: [] $T, decorated: [] Decoration, allocator := context.allocator,
 }
 
 
-apply :: (array: [] $T, decorated: [] Decoration, allocator := __temporary_allocator, allocator_data : *void = null) {
+apply :: (array: [] $T, decorated: [] Decoration, allocator := temp) {
     assert(decorated.count >= array.count, "Decorated buffer is not large enough for that array.");
 
     if !allocator {

@@ -6,13 +6,12 @@ read_file :: (filepath: string, buffer: [] u8) -> File_For {
     return file_for;
 }
 
-read_file :: (filepath: string, size: s64, allocator := context.allocator, allocator_data := context.allocator_data) -> File_For {
+read_file :: (filepath: string, size: s64, allocator := context.allocator) -> File_For {
     file_for : File_For = ---;
     file_for.type = .SIZE;
     file_for.filepath = filepath;
     file_for.size = size;
     file_for.allocator = allocator;
-    file_for.allocator_data = allocator_data;
     return file_for;
 }
 
@@ -30,7 +29,7 @@ for_expansion :: (file_for: *File_For, body: Code, flags: For_Flags) #expand {
         buffer_size = file_for.buffer.count;
     }
     else {
-        data = alloc(file_for.size, file_for.allocator, file_for.allocator_data);
+        data = alloc(file_for.size, file_for.allocator);
         buffer_size = file_for.size;
     }
 
@@ -42,7 +41,7 @@ for_expansion :: (file_for: *File_For, body: Code, flags: For_Flags) #expand {
     }
 
     defer if file_for.type == .SIZE
-        free(data, file_for.allocator, file_for.allocator_data);
+        free(data, file_for.allocator);
 
     file, file_ok := file_open(file_for.filepath);
     if !file_ok {
@@ -113,7 +112,6 @@ File_For :: struct {
     type : enum {BUFFER; SIZE;};
     filepath : string;
     allocator : Allocator;
-    allocator_data : *void;
     union {
         buffer : [] u8;
         size : s64;

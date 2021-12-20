@@ -2,7 +2,7 @@
 #import "Compiler";
 
 
-constructor :: ($type : Type, $initializer := "", $blacklist := string.[], $whitelist := string.[]) -> string #expand {
+constructor :: ($type : Type, $initializer := "", $blacklist : [$NB] string = .[], $whitelist : [$NW]string = .[]) -> string #expand {
     verbose_struct_print();
 
     info := type_info(type);

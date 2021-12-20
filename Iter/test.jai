@@ -9,9 +9,4 @@ main :: () {
     }
 
     for map(values, double)  print("%\n", it);
-
-    array : [..] int;
-    add_to_array(*array, values);
-
-    print("%\n", array);
 }

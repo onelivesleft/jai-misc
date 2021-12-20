@@ -32,10 +32,10 @@ undecorate :: (decorated: [] Typed_Decoration($T, $U)) -> Typed_Undecorated(T, U
 }
 
 
-copy :: (decorated: [] Typed_Decoration($T, $U), allocator := context.allocator, allocator_data := context.allocator_data) -> [] T {
+copy :: (decorated: [] Typed_Decoration($T, $U), allocator := context.allocator) -> [] T {
     array : [] T = ---;
     array.count = decorated.count;
-    array.data = alloc(array.count, allocator, allocator_data);
+    array.data = alloc(array.count, allocator);
     for decorated_item, i: decorated {
         array[i] = <<decorated_item.data;
     }
@@ -43,16 +43,15 @@ copy :: (decorated: [] Typed_Decoration($T, $U), allocator := context.allocator,
 }
 
 
-apply :: (array: [] $T, decorated: [] Typed_Decoration(T, $U), allocator := __temporary_allocator, allocator_data : *void = null) {
+apply :: (array: [] $T, decorated: [] Typed_Decoration(T, $U), allocator := temp) {
     assert(decorated.count >= array.count, "Decorated buffer is not large enough for that array.");
 
     if !allocator {
         allocator = context.allocator;
-        allocator_data = context.allocator_data;
     }
 
-    intermediate := copy(decorated, allocator, allocator_data);
-    defer free(intermediate.data, allocator, allocator_data);
+    intermediate := copy(decorated, allocator);
+    defer free(intermediate.data, allocator);
 
     memcpy(array.data, intermediate.data, array.count);
 }

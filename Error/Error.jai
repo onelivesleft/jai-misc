@@ -13,15 +13,15 @@ print_error :: (format_string: string, args: .. Any) -> bytes_printed: s64 {
 } @PrintLike
 
 
-write_builder_to_stderr :: (using b: *String_Builder) -> s64 {
+write_builder_to_stderr :: (using builder: *String_Builder) -> s64 {
     if !allocator.proc return 0;
 
-    buffer  := *base_buffer;
+    buffer  := get_base_buffer(builder);
     written := 0;
     while buffer {
         s: string = ---;
-        s.data  = buffer.data.data;
-        s.count = buffer.occupied;
+        s.data  = get_buffer_data(buffer);
+        s.count = buffer.count;
 
         write_string_to_stderr(s);
         written += s.count;

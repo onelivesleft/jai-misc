@@ -282,7 +282,8 @@ window_style : u32 : xx (WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBO
 
 
 thread_update :: (thread: *Thread) -> s64 {
-    window = Window_Creation.create_window(window_width, window_height, window_title, window_x = 200, window_y = 200, style = window_style);
+    window = Window_Creation.create_window(window_width, window_height, window_title, window_x = 200, window_y = 200);
+    // @TODO set window style
     set_render_target(window);
     //init_fonts();  @TODO
 
