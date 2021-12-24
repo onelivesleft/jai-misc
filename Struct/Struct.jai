@@ -2,9 +2,7 @@
 #import "Compiler";
 
 
-constructor :: ($type : Type, $initializer := "", $blacklist : [$NB] string = .[], $whitelist : [$NW]string = .[]) -> string #expand {
-    verbose_struct_print();
-
+constructor :: ($type : Type, $initializer : (x: *type) = null, $blacklist : [$NB] string = .[], $whitelist : [$NW]string = .[], caller_code := #caller_code) -> string #expand {
     info := type_info(type);
     assert(info.info.type == .STRUCT, "Expected a struct: constructor may only be used with struct types.");
 
@@ -69,7 +67,42 @@ __jai, info.name);
     }
 
     if initializer {
-        print_to_builder(*builder, "    %1(*result);\n", initializer);
+        procedure_call :: (node: *Code_Node) -> *Code_Procedure_Call {
+            assert(node.kind == .PROCEDURE_CALL);
+            return cast(*Code_Procedure_Call)node;
+        }
+
+        procedure_name :: (expression: *Code_Node) -> string {
+            if expression.kind == {
+                case .IDENT;
+                ident := cast(*Code_Ident) expression;
+                return ident.name;
+
+                case .DIRECTIVE_BAKE;
+                bake := cast(*Code_Directive_Bake) expression;
+                return procedure_name(procedure_call(bake.procedure_call).procedure_expression);
+
+                case;
+                assert(false, "You may only use a named procedure (or #bake_arguments thereof) as an initializer.");
+                return "";
+            }
+        }
+
+        nodes := compiler_get_nodes(caller_code);
+        c := procedure_call(nodes);
+
+        expression : *Code_Node = null;
+        for c.arguments_unsorted {
+            if it.name && (cast(*Code_Ident)it.name).name == "initializer" {
+                print_to_builder(*builder, "    %1(*result);\n", procedure_name(it.expression));
+                expression = null;
+                break;
+            }
+            else if it_index == 1 {
+                expression = it.expression;
+            }
+        }
+        if expression  print_to_builder(*builder, "    %1(*result);\n", procedure_name(expression));
     }
 
     append(*builder, #string __jai
