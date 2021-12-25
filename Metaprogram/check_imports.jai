@@ -11,6 +11,24 @@ modules_folder :: "modules";
 modules_list_filename :: "modules.lst";
 
 
+// @TODO report this weird unrepoable bug
+xcheck_imports :: (message: *Message) {
+    if message.kind == .FAILED_IMPORT {
+        import := cast(*Message_Failed_Import) message;
+        if import.status != .NOT_FOUND
+        || import.host_module_name
+            return;
+
+        import, ok := parse_import(import.target_module_name);
+        // import is a *Import!
+        print("%\n", type_of(import));
+        print("%\n", import);
+        print("%\n", <<import);
+    }
+}
+
+
+
 check_imports :: (message: *Message) {
     if message.kind == .FAILED_IMPORT {
         message_import := cast(*Message_Failed_Import) message;
@@ -39,7 +57,9 @@ __, "\e");
 
         path := find_downloaded_import(import, base_path);
         if path {
+            provide_import(message.workspace, message_import, .ABSOLUTE_PATH, path);
             //provide_import(message.workspace, message_import, .ABSOLUTE_PATH, tprint("%1%2/module.jai", #filepath, path));
+
             // File :: #import "File";
             // provide_import(message.workspace, message_import, .FULL_TEXT, File.read_entire_file(tprint("%1%2/module.jai", #filepath, path)));
             return;
@@ -48,7 +68,9 @@ __, "\e");
             downloaded := download_import(import, base_path);
             path = find_downloaded_import(import, base_path);
             if path {
+                provide_import(message.workspace, message_import, .ABSOLUTE_PATH, path);
                 //provide_import(message.workspace, message_import, .ABSOLUTE_PATH, tprint("%1%2/module.jai", #filepath, path));
+
                 // File :: #import "File";
                 // provide_import(message.workspace, message_import, .FULL_TEXT, File.read_entire_file(tprint("%1%2/module.jai", #filepath, path)));
                 return;
@@ -273,22 +295,3 @@ last_index :: (s: string, c: u8) -> int, bool {
 ends_with :: (s: string, c: u8) -> bool {
     return s && s[s.count - 1] == c;
 }
-
-/* @TODO report
-check_imports :: (message: *Message) {
-    if message.kind == .FAILED_IMPORT {
-        import := cast(*Message_Failed_Import) message;
-        if import.status != .NOT_FOUND
-        || import.host_module_name
-            return;
-
-        //Struct :: #import "Struct";
-        //Struct.verbose_struct_print();
-        import, ok := parse_import(import.target_module_name);
-        print("%\n", ok);
-        print("%\n", type_of(import));
-        print("%\n", <<import);
-        print("%\n", import);
-    }
-}
-*/

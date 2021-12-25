@@ -2,4 +2,4 @@
 *.pdb
 .build/
 Default_Metaprogram.jai
-*/modules
+*/modulesx
